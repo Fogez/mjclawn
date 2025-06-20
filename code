@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landscaping Service Estimate Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .service-option {
+            transition: all 0.3s ease;
+        }
+        .service-option:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .estimate-card {
+            background: linear-gradient(135deg, #2f6f2f, #1a4a1a);
+        }
+        .calendly-section {
+            margin-top: 50px;
+            border-top: 1px solid #d1d5db;
+            padding-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-green-800 mb-2">Landscaping Service Estimate Calculator</h1>
+            <p class="text-gray-600">Get an instant estimate for your property's landscaping needs</p>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- Input Section -->
+            <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-green-700">Property Information</h2>
+                
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium">
+                        Property Size (acres):
+                    </label>
+                    <input
+                        type="number"
+                        id="propertySize"
+                        value="0.25"
+                        min="0.1"
+                        step="0.1"
+                        class="w-full p-2 border border-gray-300 rounded"
+                    />
+                </div>
+                
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input
+                            type="checkbox"
+                            id="isFirstTime"
+                            class="mr-2 h-4 w-4"
+                        />
+                        First-time client
+                    </label>
+                </div>
+                
+                <h2 class="text-xl font-semibold mb-4 text-green-700">Services</h2>
+                
+                <!-- Mowing Service -->
+                <div class="service-option mb-4 p-3 bg-white rounded border border-green-200">
+                    <label class="flex items-center font-medium">
+                        <input
+                            type="checkbox"
+                            id="mowing"
+                            class="mr-2 h-4 w-4 service-checkbox"
+                        />
+                        Mowing Service
+                    </label>
+                    
+                    <div id="mowingOptions" class="mt-2 ml-6 hidden">
+                        <label class="block mb-2">Frequency:</label>
+                        <select
+                            id="mowingFrequency"
+                            class="w-full p-2 border border-gray-300 rounded"
+                        >
+                            <option value="weekly">Weekly (Every 7 days)</option>
+                            <option value="biweekly">Bi-weekly (Every 14 days, +25%)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Mulching Service -->
+                <div class="service-option mb-4 p-3 bg-white rounded border border-green-200">
+                    <label class="flex items-center font-medium">
+                        <input
+                            type="checkbox"
+                            id="mulching"
+                            class="mr-2 h-4 w-4 service-checkbox"
+                        />
+                        Mulching Service
+                    </label>
+                    
+                    <div id="mulchingOptions" class="mt-2 ml-6 hidden">
+                        <label class="block mb-2">Yards of mulch:</label>
+                        <input
+                            type="number"
+                            id="mulchingYards"
+                            value="0"
+                            min="0"
+                            class="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                </div>
+                
+                <!-- Seasonal Cleanup -->
+                <div class="service-option mb-4 p-3 bg-white rounded border border-green-200">
+                    <label class="flex items-center font-medium">
+                        <input
+                            type="checkbox"
+                            id="seasonalCleanup"
+                            class="mr-2 h-4 w-4 service-checkbox"
+                        />
+                        Seasonal Cleanup (Once per season)
+                    </label>
+                </div>
+                
+                <!-- Gutter Cleaning -->
+                <div class="service-option mb-4 p-3 bg-white rounded border border-green-200">
+                    <label class="flex items-center font-medium">
+                        <input
+                            type="checkbox"
+                            id="gutterCleaning"
+                            class="mr-2 h-4 w-4 service-checkbox"
+                        />
+                        Gutter Cleaning
+                    </label>
+                    
+                    <div id="gutterOptions" class="mt-2 ml-6 hidden space-y-3">
+                        <div>
+                            <label class="block mb-2">Number of stories:</label>
+                            <input
+                                type="number"
+                                id="gutterStories"
+                                value="1"
+                                min="1"
+                                class="w-full p-2 border border-gray-300 rounded"
+                            />
+                        </div>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="gutterScrub"
+                                    class="mr-2 h-4 w-4"
+                                />
+                                Add Gutter Outside Scrub (+25%)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estimate Section -->
+            <div class="estimate-card text-white p-6 rounded-lg shadow-xl">
+                <h2 class="text-xl font-semibold mb-6 border-b border-green-500 pb-2">Your Estimate</h2>
+                
+                <div class="space-y-4">
+                    <div id="mowingCostRow" class="flex justify-between hidden">
+                        <span>Mowing Service:</span>
+                        <span id="mowingCost" class="font-semibold">$0.00</span>
+                    </div>
+                    
+                    <div id="mulchingCostRow" class="flex justify-between hidden">
+                        <span>Mulching Service:</span>
+                        <span id="mulchingCost" class="font-semibold">$0.00</span>
+                    </div>
+                    
+                    <div id="seasonalCleanupCostRow" class="flex justify-between hidden">
+                        <span>Seasonal Cleanup:</span>
+                        <span id="seasonalCleanupCost" class="font-semibold">$0.00</span>
+                    </div>
+                    
+                    <div id="gutterCleaningCostRow" class="flex justify-between hidden">
+                        <span>Gutter Cleaning:</span>
+                        <span id="gutterCleaningCost" class="font-semibold">$0.00</span>
+                    </div>
+                    
+                    <div class="pt-4 mt-4 border-t border-green-500 flex justify-between text-lg font-bold">
+                        <span>Total Estimate:</span>
+                        <span id="totalCost">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-green-800 p-4 rounded-lg">
+                    <h3 class="font-medium mb-2">Estimate Details:</h3>
+                    <ul id="estimateDetails" class="space-y-2 text-sm">
+                        <li class="text-gray-300">Select services to see details</li>
+                    </ul>
+                </div>
+                
+                <button id="saveEstimate" class="mt-6 w-full bg-green-900 hover:bg-green-950 text-white font-bold py-3 px-4 rounded transition duration-200">
+                    Save Estimate & Schedule Consultation
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-6 text-center text-sm text-gray-500">
+            Note: This is an estimate only. Final pricing may vary based on property-specific conditions.
+        </div>
+
+        <!-- Calendly Section -->
+        <div class="calendly-section">
+            <h2 class="text-2xl font-bold text-center mb-6 text-green-800">Schedule a Consultation</h2>
+            <p class="text-center mb-6 text-gray-600">Choose a time that works for you, and our team will discuss your specific landscaping needs.</p>
+            
+           <!-- Calendly inline widget begin -->
+<div class="calendly-inline-widget" data-url="https://calendly.com/mjclawnservice10?hide_gdpr_banner=1" style="min-width:320px;height:700px;"></div>
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+<!-- Calendly inline widget end -->
+        </div>
+    </div>
+
+    <script>
+        // Get all input elements
+        const propertySize = document.getElementById('propertySize');
+        const isFirstTime = document.getElementById('isFirstTime');
+        const mowing = document.getElementById('mowing');
+        const mowingFrequency = document.getElementById('mowingFrequency');
+        const mulching = document.getElementById('mulching');
+        const mulchingYards = document.getElementById('mulchingYards');
+        const seasonalCleanup = document.getElementById('seasonalCleanup');
+        const gutterCleaning = document.getElementById('gutterCleaning');
+        const gutterStories = document.getElementById('gutterStories');
+        const gutterScrub = document.getElementById('gutterScrub');
+        
+        // Get all display elements
+        const mowingCostRow = document.getElementById('mowingCostRow');
+        const mowingCostDisplay = document.getElementById('mowingCost');
+        const mulchingCostRow = document.getElementById('mulchingCostRow');
+        const mulchingCostDisplay = document.getElementById('mulchingCost');
+        const seasonalCleanupCostRow = document.getElementById('seasonalCleanupCostRow');
+        const seasonalCleanupCostDisplay = document.getElementById('seasonalCleanupCost');
+        const gutterCleaningCostRow = document.getElementById('gutterCleaningCostRow');
+        const gutterCleaningCostDisplay = document.getElementById('gutterCleaningCost');
+        const totalCostDisplay = document.getElementById('totalCost');
+        const estimateDetails = document.getElementById('estimateDetails');
+        
+        // Get service option divs
+        const mowingOptions = document.getElementById('mowingOptions');
+        const mulchingOptions = document.getElementById('mulchingOptions');
+        const gutterOptions = document.getElementById('gutterOptions');
+        
+        // Add event listeners to all inputs
+        const allInputs = [
+            propertySize, isFirstTime, mowing, mowingFrequency, 
+            mulching, mulchingYards, seasonalCleanup, 
+            gutterCleaning, gutterStories, gutterScrub
+        ];
+        
+        allInputs.forEach(input => {
+            input.addEventListener('change', calculateEstimate);
+        });
+        
+        // Add event listeners to show/hide service options
+        mowing.addEventListener('change', function() {
+            mowingOptions.classList.toggle('hidden', !this.checked);
+            calculateEstimate();
+        });
+        
+        mulching.addEventListener('change', function() {
+            mulchingOptions.classList.toggle('hidden', !this.checked);
+            calculateEstimate();
+        });
+        
+        gutterCleaning.addEventListener('change', function() {
+            gutterOptions.classList.toggle('hidden', !this.checked);
+            calculateEstimate();
+        });
+        
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount);
+        }
+        
+        // Main calculation function
+        function calculateEstimate() {
+            // Initialize all costs
+            let mowingCost = 0;
+            let mulchingCost = 0;
+            let seasonalCleanupCost = 0;
+            let gutterCleaningCost = 0;
+            
+            // Get property size value
+            const propertySizeValue = parseFloat(propertySize.value) || 0;
+            
+            // Mowing calculation
+            if (mowing.checked) {
+                const baseMowingCost = 500 * propertySizeValue;
+                const frequencyMultiplier = mowingFrequency.value === "biweekly" ? 1.25 : 1;
+                mowingCost = baseMowingCost * frequencyMultiplier;
+                
+// Enforce minimum pricing
+if (mowingFrequency.value === "weekly") {
+    mowingCost = Math.max(mowingCost, 124);
+} else if (mowingFrequency.value === "biweekly") {
+    mowingCost = Math.max(mowingCost, 79);
+}
+
+                if (isFirstTime.checked) {
+                    mowingCost += 100; // Add onboarding fee
+                }
+                
+                mowingCostDisplay.textContent = formatCurrency(mowingCost);
+                mowingCostRow.classList.remove('hidden');
+            } else {
+                mowingCostRow.classList.add('hidden');
+            }
+            
+            // Mulching calculation
+            if (mulching.checked) {
+                const mulchYards = parseInt(mulchingYards.value) || 0;
+                mulchingCost = 150 * mulchYards;
+                
+                mulchingCostDisplay.textContent = formatCurrency(mulchingCost);
+                mulchingCostRow.classList.remove('hidden');
+            } else {
+                mulchingCostRow.classList.add('hidden');
+            }
+            
+            // Seasonal Cleanup calculation
+            if (seasonalCleanup.checked) {
+                seasonalCleanupCost = Math.max(399, 2500 * propertySizeValue);
+                
+                seasonalCleanupCostDisplay.textContent = formatCurrency(seasonalCleanupCost);
+                seasonalCleanupCostRow.classList.remove('hidden');
+            } else {
+                seasonalCleanupCostRow.classList.add('hidden');
+            }
+            
+            // Gutter Cleaning calculation
+            if (gutterCleaning.checked) {
+                const stories = parseInt(gutterStories.value) || 1;
+                let baseGutterCost = 250 + (stories - 1) * 150;
+                gutterCleaningCost = baseGutterCost;
+                
+                if (gutterScrub.checked) {
+                    gutterCleaningCost += baseGutterCost * 0.25;
+                }
+                
+                gutterCleaningCostDisplay.textContent = formatCurrency(gutterCleaningCost);
+                gutterCleaningCostRow.classList.remove('hidden');
+            } else {
+                gutterCleaningCostRow.classList.add('hidden');
+            }
+            
+            // Calculate total
+            const totalCost = mowingCost + mulchingCost + seasonalCleanupCost + gutterCleaningCost;
+            totalCostDisplay.textContent = formatCurrency(totalCost);
+            
+            // Update estimate details
+            updateEstimateDetails(propertySizeValue);
+        }
+        
+        function updateEstimateDetails(propertySizeValue) {
+            let details = [];
+            
+            if (mowing.checked) {
+                const frequency = mowingFrequency.value === "weekly" ? "Weekly" : "Bi-weekly";
+                let detail = `• Mowing: ${frequency} service`;
+                
+                if (isFirstTime.checked) {
+                    detail += " (includes $100 onboarding fee)";
+                }
+                
+                details.push(detail);
+            }
+            
+            if (mulching.checked) {
+                const yards = parseInt(mulchingYards.value) || 0;
+                details.push(`• Mulching: ${yards} yard${yards !== 1 ? "s" : ""} of mulch at $150/yard`);
+            }
+            
+            if (seasonalCleanup.checked) {
+                details.push(`• Seasonal Cleanup: One-time service per season`);
+            }
+            
+            if (gutterCleaning.checked) {
+                const stories = parseInt(gutterStories.value) || 1;
+                let detail = `• Gutter Cleaning: ${stories} stor${stories !== 1 ? "ies" : "y"} home`;
+                
+                if (gutterScrub.checked) {
+                    detail += " with Outside Scrub service";
+                }
+                
+                details.push(detail);
+            }
+            
+            // Update the details section
+            if (details.length > 0) {
+                estimateDetails.innerHTML = details.join('<br>');
+            } else {
+                estimateDetails.innerHTML = '<li class="text-gray-300">Select services to see details</li>';
+            }
+        }
+        
+        // Scroll to Calendly when "Save Estimate & Schedule Consultation" is clicked
+        document.getElementById('saveEstimate').addEventListener('click', function() {
+            document.querySelector('.calendly-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Initialize the calculator
+        calculateEstimate();
+    </script>
+</body>
+</html>
